@@ -2,6 +2,7 @@ package co.edu.sena.Dentvision_Backend.controller;
 
 import co.edu.sena.Dentvision_Backend.dto.user.UserRequest;
 import co.edu.sena.Dentvision_Backend.dto.user.UserResponse;
+import co.edu.sena.Dentvision_Backend.exception.DuplicateResourceException;
 import co.edu.sena.Dentvision_Backend.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +30,12 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<UserResponse> create(@Valid @RequestBody UserRequest request) {
-        return ResponseEntity.ok(userService.create(request));
+        try {
+
+            return ResponseEntity.ok(userService.create(request));
+        }catch(DuplicateResourceException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @PutMapping("/{id}")

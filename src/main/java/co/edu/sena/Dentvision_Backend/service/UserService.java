@@ -3,6 +3,7 @@ package co.edu.sena.Dentvision_Backend.service;
 import co.edu.sena.Dentvision_Backend.dto.user.UserRequest;
 import co.edu.sena.Dentvision_Backend.dto.user.UserResponse;
 import co.edu.sena.Dentvision_Backend.entity.User;
+import co.edu.sena.Dentvision_Backend.exception.DuplicateResourceException;
 import co.edu.sena.Dentvision_Backend.exception.ResourceNotFoundException;
 import co.edu.sena.Dentvision_Backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -43,6 +44,13 @@ public class UserService {
                 .estado(request.getEstado() != null ? request.getEstado() : "ACTIVO")
                 .role(request.getRole() != null ? request.getRole() : ROLE_USER)
                 .build();
+
+        if(userRepository.existsByUsername(request.getUsername())) {
+            throw new DuplicateResourceException("El usuario existe en el sistema");
+        }
+        if(userRepository.existsByEmail(request.getEmail())) {
+            throw new DuplicateResourceException("El email existe en el sistema");
+        }
 
         return mapToResponse(userRepository.save(user));
     }
