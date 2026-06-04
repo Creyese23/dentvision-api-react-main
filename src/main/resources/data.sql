@@ -1,4 +1,4 @@
-INSERT INTO usuarios (username, email, password, role, estado, usuario_por_defecto, created_at, updated_at)
+INSERT INTO usuarios (username, email, password, role, estado, created_at, updated_at)
 SELECT 'admin', 'admin@sena.edu.co',
        '$2b$10$uNjp2NXJ6kkTAdcPhV0LD.8Ek4LweekLrtby90i1Ohs2xFkIP3Amm',
        'ROLE_ADMIN', 'ACTIVO', 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP

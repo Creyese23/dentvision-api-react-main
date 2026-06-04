@@ -1,5 +1,6 @@
 package co.edu.sena.Dentvision_Backend.dto.user;
 
+import co.edu.sena.Dentvision_Backend.entity.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -27,4 +28,6 @@ public class UserRequest {
     private String password;
 
     private String estado;
+
+    private Role role;
 }

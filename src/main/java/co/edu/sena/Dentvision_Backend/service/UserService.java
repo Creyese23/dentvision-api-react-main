@@ -6,11 +6,14 @@ import co.edu.sena.Dentvision_Backend.entity.User;
 import co.edu.sena.Dentvision_Backend.exception.ResourceNotFoundException;
 import co.edu.sena.Dentvision_Backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static co.edu.sena.Dentvision_Backend.entity.Role.ROLE_USER;
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +21,7 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public List<UserResponse> findAll() {
         return userRepository.findAll().stream()
@@ -35,8 +39,9 @@ public class UserService {
         User user = User.builder()
                 .username(request.getUsername())
                 .email(request.getEmail())
-                .password(request.getPassword())
+                .password(hashPassword(request.getPassword()))
                 .estado(request.getEstado() != null ? request.getEstado() : "ACTIVO")
+                .role(request.getRole() != null ? request.getRole() : ROLE_USER)
                 .build();
 
         return mapToResponse(userRepository.save(user));
@@ -49,7 +54,7 @@ public class UserService {
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
         if (request.getPassword() != null && !request.getPassword().isEmpty()) {
-            user.setPassword(request.getPassword());
+            user.setPassword(hashPassword(request.getPassword()));
         }
         if (request.getEstado() != null) {
             user.setEstado(request.getEstado());
@@ -63,6 +68,13 @@ public class UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con id " + id));
         user.setEstado("INACTIVO");
         userRepository.save(user);
+    }
+
+    private String hashPassword(String password) {
+        if (password != null && password.matches("^\\$2[aby]\\$\\d{2}\\$.{53}$")) {
+            return password;
+        }
+        return passwordEncoder.encode(password);
     }
 
     private UserResponse mapToResponse(User user) {

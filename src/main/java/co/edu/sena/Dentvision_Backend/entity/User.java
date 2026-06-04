@@ -46,10 +46,6 @@ public class User {
     @Builder.Default
     private String estado = "ACTIVO";
 
-    @Column(name = "usuario_por_defecto", nullable = false)
-    @Builder.Default
-    private Boolean usuarioPorDefecto = false;
-
     @Column(name = "fecha_eliminacion")
     private LocalDateTime fechaEliminacion;
 
